@@ -2,14 +2,12 @@
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { POKEMON } from '../data/pokemon.js'
 
+const emit = defineEmits(['restart'])
+
 const TOTAL = POKEMON.length
 
-function sequentialOrder() {
-  return Array.from({ length: TOTAL }, (_, i) => i + 1)
-}
-
 function shuffledOrder() {
-  const arr = sequentialOrder()
+  const arr = Array.from({ length: TOTAL }, (_, i) => i + 1)
   for (let i = arr.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1))
     ;[arr[i], arr[j]] = [arr[j], arr[i]]
@@ -22,7 +20,6 @@ const order = ref(shuffledOrder())
 const cursor = ref(0) // 0-based index into `order`
 const revealed = ref(false)
 const flashing = ref(false)
-const shuffled = ref(true)
 
 // One Audio element, retargeted on each reveal.
 const cryAudio = new Audio()
@@ -84,14 +81,11 @@ function shuffle() {
   order.value = shuffledOrder()
   cursor.value = 0
   revealed.value = false
-  shuffled.value = true
 }
 
-function reset() {
-  order.value = sequentialOrder()
-  cursor.value = 0
-  revealed.value = false
-  shuffled.value = false
+function restart() {
+  stopCry()
+  emit('restart')
 }
 
 // Keep the next handful of images in browser cache so transitions are instant.
@@ -138,7 +132,7 @@ function handleKey(e) {
       break
     case 'r':
     case 'R':
-      reset()
+      restart()
       break
     case 's':
     case 'S':
@@ -329,7 +323,6 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
       <button
         type="button"
         class="px-3 py-2 rounded-lg hover:text-fog-100 hover:bg-fog-100/5 transition"
-        :class="{ 'text-volt-400': shuffled }"
         @click="shuffle"
       >
         ⤳ Mezclar
@@ -338,7 +331,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
       <button
         type="button"
         class="px-3 py-2 rounded-lg hover:text-fog-100 hover:bg-fog-100/5 transition"
-        @click="reset"
+        @click="restart"
       >
         ↺ Reiniciar
       </button>

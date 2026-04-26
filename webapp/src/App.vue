@@ -5,20 +5,23 @@ import PokemonGame from './components/PokemonGame.vue'
 
 const started = ref(false)
 
-// Module-scoped so it survives any re-render of App and can only be
-// instantiated once. The intro mp3 plays exactly once, when the user
-// first clicks "Comenzar a jugar".
 let introAudio = null
 
 function startGame() {
   if (started.value) return
   started.value = true
-  if (!introAudio) {
-    introAudio = new Audio(`${import.meta.env.BASE_URL}intro.mp3`)
-    introAudio.volume = 0.7
-    // Autoplay restrictions are satisfied: this runs from a user gesture.
-    introAudio.play().catch(() => {})
+  introAudio = new Audio(`${import.meta.env.BASE_URL}intro.mp3`)
+  introAudio.volume = 0.7
+  // Autoplay restrictions are satisfied: this runs from a user gesture.
+  introAudio.play().catch(() => {})
+}
+
+function restartGame() {
+  if (introAudio) {
+    introAudio.pause()
+    introAudio = null
   }
+  started.value = false
 }
 </script>
 
@@ -26,7 +29,7 @@ function startGame() {
   <main class="min-h-svh w-full flex flex-col">
     <Transition name="page" mode="out-in">
       <WelcomeScreen v-if="!started" @start="startGame" />
-      <PokemonGame v-else />
+      <PokemonGame v-else @restart="restartGame" />
     </Transition>
   </main>
 </template>
