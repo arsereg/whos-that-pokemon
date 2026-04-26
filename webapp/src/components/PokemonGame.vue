@@ -4,12 +4,25 @@ import { POKEMON } from '../data/pokemon.js'
 
 const TOTAL = POKEMON.length
 
-// 1..151 in Pokédex order; reshuffled in place by shuffle().
-const order = ref(Array.from({ length: TOTAL }, (_, i) => i + 1))
+function sequentialOrder() {
+  return Array.from({ length: TOTAL }, (_, i) => i + 1)
+}
+
+function shuffledOrder() {
+  const arr = sequentialOrder()
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[arr[i], arr[j]] = [arr[j], arr[i]]
+  }
+  return arr
+}
+
+// Default to a fresh shuffle so the first Pokémon isn't always Bulbasaur.
+const order = ref(shuffledOrder())
 const cursor = ref(0) // 0-based index into `order`
 const revealed = ref(false)
 const flashing = ref(false)
-const shuffled = ref(false)
+const shuffled = ref(true)
 
 const currentId = computed(() => order.value[cursor.value])
 const current = computed(() => POKEMON[currentId.value - 1])
@@ -20,11 +33,10 @@ const originalSrc = computed(
   () => `${import.meta.env.BASE_URL}pokemon/${currentId.value}.png`,
 )
 const idLabel = computed(() => `#${String(currentId.value).padStart(3, '0')}`)
-const positionLabel = computed(() => `${cursor.value + 1} / ${TOTAL}`)
 const liveAnnouncement = computed(() =>
   revealed.value
     ? `Revelado: ${current.value.name}, número ${currentId.value}.`
-    : `Pokémon ${cursor.value + 1} de ${TOTAL}. Silueta mostrada.`,
+    : 'Silueta mostrada.',
 )
 
 function reveal() {
@@ -49,19 +61,14 @@ function prev() {
 }
 
 function shuffle() {
-  const arr = [...order.value]
-  for (let i = arr.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[arr[i], arr[j]] = [arr[j], arr[i]]
-  }
-  order.value = arr
+  order.value = shuffledOrder()
   cursor.value = 0
   revealed.value = false
   shuffled.value = true
 }
 
 function reset() {
-  order.value = Array.from({ length: TOTAL }, (_, i) => i + 1)
+  order.value = sequentialOrder()
   cursor.value = 0
   revealed.value = false
   shuffled.value = false
@@ -193,12 +200,6 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
         >
           {{ idLabel }}
         </span>
-        <span
-          class="absolute top-4 right-5 font-mono text-[11px] tracking-[0.2em] tabular text-fog-500"
-          aria-label="Posición en la lista"
-        >
-          {{ positionLabel }}
-        </span>
 
         <!-- image stack -->
         <div class="absolute inset-10 sm:inset-12">
@@ -304,7 +305,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
         :class="{ 'text-volt-400': shuffled }"
         @click="shuffle"
       >
-        {{ shuffled ? '⤳ Mezclado' : '⤳ Mezclar' }}
+        ⤳ Mezclar
       </button>
       <span class="text-fog-500/30" aria-hidden="true">·</span>
       <button
