@@ -41,7 +41,12 @@ jobs:
 
       - name: Install webapp deps
         working-directory: webapp
-        run: npm ci
+        # `npm install` instead of `npm ci` because Tailwind v4's
+        # platform-specific native binaries (@tailwindcss/oxide-*) are
+        # optionalDependencies, and a lockfile generated on one platform
+        # doesn't list the binaries needed on another. `npm install`
+        # resolves the missing entries; `npm ci` errors out.
+        run: npm install
 
       - name: Build
         working-directory: webapp
