@@ -1,0 +1,24 @@
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+
+# Node / Vite
+webapp/node_modules/
+webapp/dist/
+webapp/.vite/
+webapp/*.log
+
+# Generated copies — regenerated from ../*.png and ../obscured/*.png by `npm run prep`
+webapp/public/pokemon/
+webapp/public/obscured/
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+
+# Logs
+*.log
