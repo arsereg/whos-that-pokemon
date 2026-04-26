@@ -23,8 +23,8 @@ const idLabel = computed(() => `#${String(currentId.value).padStart(3, '0')}`)
 const positionLabel = computed(() => `${cursor.value + 1} / ${TOTAL}`)
 const liveAnnouncement = computed(() =>
   revealed.value
-    ? `Revealed: ${current.value.name}, number ${currentId.value}.`
-    : `Pokémon ${cursor.value + 1} of ${TOTAL}. Silhouette displayed.`,
+    ? `Revelado: ${current.value.name}, número ${currentId.value}.`
+    : `Pokémon ${cursor.value + 1} de ${TOTAL}. Silueta mostrada.`,
 )
 
 function reveal() {
@@ -126,15 +126,15 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
         class="text-fog-500 uppercase tracking-[0.3em] sm:tracking-[0.4em] text-[10px] sm:text-xs mb-3 font-medium flex items-center justify-center gap-2"
       >
         <span class="size-1.5 rounded-full bg-volt-400 dot-pulse shrink-0"></span>
-        Original 151 · Kanto Region
+        151 Originales · Región de Kanto
       </p>
       <h1
-        class="title-shimmer font-display font-bold leading-[0.95] tracking-tight text-[clamp(1.5rem,6.5vw,3rem)] sm:text-5xl md:text-6xl"
+        class="title-shimmer font-display font-bold leading-[0.95] tracking-tight text-[clamp(1.375rem,6vw,3rem)] sm:text-5xl md:text-6xl"
       >
-        Who&rsquo;s That Pokémon?
+        ¿Quién es ese Pokémon?
       </h1>
       <p class="text-fog-500 text-sm sm:text-base mt-4 max-w-md mx-auto px-2">
-        Guess the Pokémon from its silhouette. Reveal when you&rsquo;re ready.
+        Adivina el Pokémon por su silueta. Revélalo cuando estés listo.
       </p>
     </header>
 
@@ -189,13 +189,13 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
         <!-- corner labels -->
         <span
           class="absolute top-4 left-5 font-mono text-[11px] tracking-[0.2em] tabular text-volt-400 font-semibold"
-          aria-label="Pokédex number"
+          aria-label="Número de Pokédex"
         >
           {{ idLabel }}
         </span>
         <span
           class="absolute top-4 right-5 font-mono text-[11px] tracking-[0.2em] tabular text-fog-500"
-          aria-label="Position in deck"
+          aria-label="Posición en la lista"
         >
           {{ positionLabel }}
         </span>
@@ -211,8 +211,8 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
                 :src="revealed ? originalSrc : obscuredSrc"
                 :alt="
                   revealed
-                    ? `${current.name}, the Pokémon`
-                    : `Silhouette of Pokémon ${idLabel}`
+                    ? `${current.name}, el Pokémon`
+                    : `Silueta del Pokémon ${idLabel}`
                 "
                 draggable="false"
               />
@@ -241,12 +241,12 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
             <p
               class="text-volt-400 text-[10px] uppercase tracking-[0.5em] font-semibold mb-1"
             >
-              It&rsquo;s&hellip;
+              Es&hellip;
             </p>
             <p
               class="font-display font-bold text-2xl sm:text-3xl text-fog-100"
             >
-              {{ current.name }}!
+              ¡{{ current.name }}!
             </p>
           </div>
         </Transition>
@@ -277,14 +277,14 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
         :aria-pressed="revealed"
         @click="reveal"
       >
-        {{ revealed ? 'Revealed ✓' : 'Reveal' }}
+        {{ revealed ? 'Revelado ✓' : 'Revelar' }}
       </button>
       <button
         type="button"
         class="flex-1 px-6 py-4 rounded-2xl font-display font-bold text-base tracking-wide uppercase transition-all duration-200 bg-fog-100/[0.04] text-fog-100 hover:bg-fog-100/[0.09] hover:scale-[1.02] active:scale-[0.98] border border-fog-100/15"
         @click="next"
       >
-        Next →
+        Siguiente →
       </button>
     </div>
 
@@ -295,7 +295,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
         class="px-3 py-2 rounded-lg hover:text-fog-100 hover:bg-fog-100/5 transition"
         @click="prev"
       >
-        ← Previous
+        ← Anterior
       </button>
       <span class="text-fog-500/30" aria-hidden="true">·</span>
       <button
@@ -304,7 +304,7 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
         :class="{ 'text-volt-400': shuffled }"
         @click="shuffle"
       >
-        {{ shuffled ? '⤳ Shuffled' : '⤳ Shuffle' }}
+        {{ shuffled ? '⤳ Mezclado' : '⤳ Mezclar' }}
       </button>
       <span class="text-fog-500/30" aria-hidden="true">·</span>
       <button
@@ -312,30 +312,30 @@ onUnmounted(() => window.removeEventListener('keydown', handleKey))
         class="px-3 py-2 rounded-lg hover:text-fog-100 hover:bg-fog-100/5 transition"
         @click="reset"
       >
-        ↺ Reset
+        ↺ Reiniciar
       </button>
     </div>
 
     <!-- Shortcut hint -->
     <p class="hidden sm:flex flex-wrap items-center justify-center gap-x-3 gap-y-1 text-[11px] text-fog-500/70 tracking-wider">
       <span>
-        <kbd class="kbd">space</kbd>
-        <span class="ml-1.5">reveal / next</span>
+        <kbd class="kbd">espacio</kbd>
+        <span class="ml-1.5">revelar / siguiente</span>
       </span>
       <span class="text-fog-500/30">·</span>
       <span>
         <kbd class="kbd">←</kbd><kbd class="kbd ml-0.5">→</kbd>
-        <span class="ml-1.5">navigate</span>
+        <span class="ml-1.5">navegar</span>
       </span>
       <span class="text-fog-500/30">·</span>
       <span>
         <kbd class="kbd">s</kbd>
-        <span class="ml-1.5">shuffle</span>
+        <span class="ml-1.5">mezclar</span>
       </span>
       <span class="text-fog-500/30">·</span>
       <span>
         <kbd class="kbd">r</kbd>
-        <span class="ml-1.5">reset</span>
+        <span class="ml-1.5">reiniciar</span>
       </span>
     </p>
   </div>
