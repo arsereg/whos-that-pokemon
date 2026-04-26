@@ -15,6 +15,10 @@ webapp/*.log
 webapp/public/pokemon/
 webapp/public/obscured/
 
+# Upstream PokeAPI/cries clone — not part of this repo. The 151 .ogg files
+# we actually serve live in webapp/public/cries/ (committed).
+cries/
+
 # Python
 __pycache__/
 *.pyc

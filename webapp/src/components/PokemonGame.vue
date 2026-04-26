@@ -24,6 +24,25 @@ const revealed = ref(false)
 const flashing = ref(false)
 const shuffled = ref(true)
 
+// One Audio element, retargeted on each reveal.
+const cryAudio = new Audio()
+cryAudio.volume = 0.55
+cryAudio.preload = 'auto'
+
+function stopCry() {
+  cryAudio.pause()
+  cryAudio.currentTime = 0
+}
+
+function playCry() {
+  stopCry()
+  cryAudio.src = `${import.meta.env.BASE_URL}cries/${currentId.value}.ogg`
+  // Autoplay restrictions are satisfied because reveal() runs from a click /
+  // keyboard event. .catch() swallows the rejection if the user has audio
+  // disabled or the browser blocks for some other reason.
+  cryAudio.play().catch(() => {})
+}
+
 const currentId = computed(() => order.value[cursor.value])
 const current = computed(() => POKEMON[currentId.value - 1])
 const obscuredSrc = computed(
@@ -42,6 +61,7 @@ const liveAnnouncement = computed(() =>
 function reveal() {
   if (revealed.value) return
   revealed.value = true
+  playCry()
   // Retrigger flash even on rapid clicks by resetting before re-setting.
   flashing.value = false
   requestAnimationFrame(() => {
@@ -85,7 +105,14 @@ function preloadAround(c) {
     r.src = `${import.meta.env.BASE_URL}pokemon/${id}.png`
   }
 }
-watch(cursor, preloadAround, { immediate: true })
+watch(
+  cursor,
+  (c) => {
+    preloadAround(c)
+    stopCry()
+  },
+  { immediate: true },
+)
 watch(order, () => preloadAround(cursor.value))
 
 function handleKey(e) {
